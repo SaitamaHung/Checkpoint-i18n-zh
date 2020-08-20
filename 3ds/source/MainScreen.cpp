@@ -53,15 +53,15 @@ MainScreen::MainScreen(void) : hid(rowlen * collen, collen)
     C2D_TextParse(&ins3, staticBuf, ".");
     C2D_TextParse(&ins4, staticBuf, "按 \uE073 或 START 退出.");
     C2D_TextParse(&version, staticBuf, ver);
-    C2D_TextParse(&checkpoint, staticBuf, "checkpoint");
+    C2D_TextParse(&checkpoint, staticBuf, "Checkpoint");
     C2D_TextParse(&c2dId, staticBuf, "ID: ");
     C2D_TextParse(&c2dMediatype, staticBuf, "位置: ");
 
     C2D_TextParse(&top_move, staticBuf, "\uE006 切换应用");
-    C2D_TextParse(&top_a, staticBuf, "\uE000 打开目标");
+    C2D_TextParse(&top_a, staticBuf, "\uE000 选择");
     C2D_TextParse(&top_y, staticBuf, "\uE003 多选");
     C2D_TextParse(&top_my, staticBuf, "\uE003 按住全选");
-    C2D_TextParse(&top_b, staticBuf, "\uE001 退出目标或取消多选");
+    C2D_TextParse(&top_b, staticBuf, "\uE001 退出选择或取消多选");
     C2D_TextParse(&bot_ts, staticBuf, "\uE01D \uE006 切换备份");
     C2D_TextParse(&bot_x, staticBuf, "\uE002 删除备份");
     C2D_TextParse(&coins, staticBuf, "\uE075");
@@ -298,7 +298,7 @@ void MainScreen::handleEvents(touchPosition* touch)
             // If the "New..." entry is selected...
             if (0 == directoryList->index()) {
                 currentOverlay = std::make_shared<YesNoOverlay>(
-                    *this, "备份所选存档?",
+                    *this, "备份当前数据?",
                     [this]() {
                         auto result = io::backup(hid.fullIndex(), 0);
                         if (std::get<0>(result)) {
@@ -427,7 +427,7 @@ void MainScreen::handleEvents(touchPosition* touch)
         }
         else if (g_bottomScrollEnabled) {
             currentOverlay = std::make_shared<YesNoOverlay>(
-                *this, "备份所选存档?",
+                *this, "备份当前数据?",
                 [this]() {
                     auto result = io::backup(hid.fullIndex(), directoryList->index());
                     if (std::get<0>(result)) {
