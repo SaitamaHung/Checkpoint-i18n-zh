@@ -51,7 +51,7 @@ void io::copyFile(FS_Archive srcArch, FS_Archive dstArch, const std::u16string& 
     }
     else {
         Logger::getInstance().log(Logger::ERROR,
-            "无法打开源文件" + StringUtils::UTF16toUTF8(srcPath) + "复制过程: 0x%08lX, 正在跳过...", input.result());
+            "无法打开源文件 " + StringUtils::UTF16toUTF8(srcPath) + ": 0x%08lX, 正在跳过...", input.result());
         return;
     }
 
@@ -78,7 +78,7 @@ void io::copyFile(FS_Archive srcArch, FS_Archive dstArch, const std::u16string& 
     }
     else {
         Logger::getInstance().log(Logger::ERROR,
-            "无法打开目标文件" + StringUtils::UTF16toUTF8(dstPath) + "复制过程: 0x%08lX, 正在跳过...",
+            "无法打开目标文件 " + StringUtils::UTF16toUTF8(dstPath) + ": 0x%08lX, 正在跳过...",
             output.result());
     }
 
