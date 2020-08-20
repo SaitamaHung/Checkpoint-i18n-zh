@@ -29,7 +29,7 @@
 ErrorOverlay::ErrorOverlay(Screen& screen, Result res, const std::string& mtext) : Overlay(screen)
 {
     textBuf = C2D_TextBufNew(128);
-    button  = std::make_unique<Clickable>(42, 162, 236, 36, COLOR_GREY_DARKER, COLOR_WHITE, "OK", true);
+    button  = std::make_unique<Clickable>(42, 162, 236, 36, COLOR_GREY_DARKER, COLOR_WHITE, "好", true);
     button->selected(true);
     std::string t = StringUtils::wrap(mtext, size, 220);
     std::string e = StringUtils::format("错误: 0x%08lX", res);
