@@ -50,7 +50,7 @@ Result servicesInit(void)
     Result res = 0;
 
     if (R_FAILED(res = Archive::init())) {
-        return consoleDisplayError("Archive::init failed.", res);
+        return consoleDisplayError("文件: 无法初始化.", res);
     }
     ATEXIT(Archive::exit);
 
@@ -60,12 +60,12 @@ Result servicesInit(void)
     mkdir("sdmc:/3ds/Checkpoint/extdata", 777);
     mkdir("sdmc:/cheats", 777);
 
-    Logger::getInstance().log(Logger::INFO, "Checkpoint loading started...");
+    Logger::getInstance().log(Logger::INFO, "Checkpoint 开始加载...");
 
     Handle hbldrHandle;
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr"))) {
-        Logger::getInstance().log(Logger::ERROR, "Error during startup with result 0x%08lX. Rosalina not found on this system.", res);
-        return consoleDisplayError("Rosalina not found on this system.\nAn updated CFW is required to launch Checkpoint.", res);
+        Logger::getInstance().log(Logger::ERROR, "无法启动: 0x%08lX. 系统内没找到 Rosalina.", res);
+        return consoleDisplayError("系统内没有找到 Rosalina.\n请更新 CFW 后再启动 Checkpoint.", res);
     }
 
     romfsInit();
@@ -86,7 +86,7 @@ Result servicesInit(void)
     // consoleDebugInit(debugDevice_SVC);
     // while (aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
 
-    Logger::getInstance().log(Logger::INFO, "Checkpoint loading finished!");
+    Logger::getInstance().log(Logger::INFO, "Checkpoint 加载完成!");
 
     return 0;
 }
