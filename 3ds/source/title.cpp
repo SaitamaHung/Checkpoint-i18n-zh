@@ -127,7 +127,7 @@ bool Title::load(u64 _id, FS_MediaType _media, FS_CardType _card)
             smdh = loadSMDH(lowId(), highId(), mMedia);
         }
         if (smdh == NULL) {
-            Logger::getInstance().log(Logger::ERROR, "Failed to load title 0x%lX due to smdh == NULL", mId);
+            Logger::getInstance().log(Logger::ERROR, "无法加载应用 0x%lX: smdh == NULL", mId);
             return false;
         }
 
@@ -149,7 +149,7 @@ bool Title::load(u64 _id, FS_MediaType _media, FS_CardType _card)
                 Result res = io::createDirectory(Archive::sdmc(), mSavePath);
                 if (R_FAILED(res)) {
                     loadTitle = false;
-                    Logger::getInstance().log(Logger::ERROR, "Failed to create backup directory with result 0x%08lX.", res);
+                    Logger::getInstance().log(Logger::ERROR, "无法创建备份文件夹: 0x%08lX.", res);
                 }
             }
         }
@@ -160,7 +160,7 @@ bool Title::load(u64 _id, FS_MediaType _media, FS_CardType _card)
                 Result res = io::createDirectory(Archive::sdmc(), mExtdataPath);
                 if (R_FAILED(res)) {
                     loadTitle = false;
-                    Logger::getInstance().log(Logger::ERROR, "Failed to create backup directory with result 0x%08lX.", res);
+                    Logger::getInstance().log(Logger::ERROR, "无法创建备份文件夹: 0x%08lX.", res);
                 }
             }
         }
@@ -176,7 +176,7 @@ bool Title::load(u64 _id, FS_MediaType _media, FS_CardType _card)
         Result res     = FSUSER_GetLegacyRomHeader(mMedia, 0LL, headerData);
         if (R_FAILED(res)) {
             delete[] headerData;
-            Logger::getInstance().log(Logger::ERROR, "Failed get legacy rom header with result 0x%08lX.", res);
+            Logger::getInstance().log(Logger::ERROR, "无法获取遗留 ROM 头: 0x%08lX.", res);
             return false;
         }
 
@@ -197,7 +197,7 @@ bool Title::load(u64 _id, FS_MediaType _media, FS_CardType _card)
 
         res = SPIGetCardType(&mCardType, (_gameCode[0] == 'I') ? 1 : 0);
         if (R_FAILED(res)) {
-            Logger::getInstance().log(Logger::ERROR, "Failed get SPI Card Type with result 0x%08lX.", res);
+            Logger::getInstance().log(Logger::ERROR, "无法获取 SPI 卡类型: 0x%08lX.", res);
             return false;
         }
 
@@ -216,7 +216,7 @@ bool Title::load(u64 _id, FS_MediaType _media, FS_CardType _card)
             res = io::createDirectory(Archive::sdmc(), mSavePath);
             if (R_FAILED(res)) {
                 loadTitle = false;
-                Logger::getInstance().log(Logger::ERROR, "Failed to create backup directory with result 0x%08lX.", res);
+                Logger::getInstance().log(Logger::ERROR, "无法创建备份文件夹: 0x%08lX.", res);
             }
         }
     }
@@ -241,13 +241,13 @@ std::string Title::mediaTypeString(void)
 {
     switch (mMedia) {
         case MEDIATYPE_SD:
-            return "SD Card";
+            return "SD 卡";
         case MEDIATYPE_GAME_CARD:
-            return "Cartridge";
+            return "游戏卡带";
         case MEDIATYPE_NAND:
             return "NAND";
         default:
-            return " ";
+            return "";
     }
 
     return " ";
@@ -323,11 +323,11 @@ void Title::refreshDirectories(void)
 
             std::sort(mSaves.rbegin(), mSaves.rend());
             std::sort(mFullSavePaths.rbegin(), mFullSavePaths.rend());
-            mSaves.insert(mSaves.begin(), StringUtils::UTF8toUTF16("New..."));
-            mFullSavePaths.insert(mFullSavePaths.begin(), StringUtils::UTF8toUTF16("New..."));
+            mSaves.insert(mSaves.begin(), StringUtils::UTF8toUTF16("新建..."));
+            mFullSavePaths.insert(mFullSavePaths.begin(), StringUtils::UTF8toUTF16("新建..."));
         }
         else {
-            Logger::getInstance().log(Logger::ERROR, "Couldn't retrieve the save directory list for the title " + shortDescription());
+            Logger::getInstance().log(Logger::ERROR, "无法找到该应用的数据文件夹" + shortDescription());
         }
 
         // save backups from configuration
@@ -359,11 +359,11 @@ void Title::refreshDirectories(void)
 
             std::sort(mExtdata.begin(), mExtdata.end());
             std::sort(mFullExtdataPaths.begin(), mFullExtdataPaths.end());
-            mExtdata.insert(mExtdata.begin(), StringUtils::UTF8toUTF16("New..."));
-            mFullExtdataPaths.insert(mFullExtdataPaths.begin(), StringUtils::UTF8toUTF16("New..."));
+            mExtdata.insert(mExtdata.begin(), StringUtils::UTF8toUTF16("新建..."));
+            mFullExtdataPaths.insert(mFullExtdataPaths.begin(), StringUtils::UTF8toUTF16("新建..."));
         }
         else {
-            Logger::getInstance().log(Logger::ERROR, "Couldn't retrieve the extdata directory list for the title " + shortDescription());
+            Logger::getInstance().log(Logger::ERROR, "无法找到该应用的额外数据文件夹" + shortDescription());
         }
 
         // extdata backups from configuration
