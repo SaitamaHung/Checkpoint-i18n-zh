@@ -60,11 +60,11 @@ Result servicesInit(void)
     mkdir("sdmc:/3ds/Checkpoint/extdata", 777);
     mkdir("sdmc:/cheats", 777);
 
-    Logger::getInstance().log(Logger::INFO, "Checkpoint 开始加载...");
+    Logger::getInstance().log(Logger::INFO, "Checkpoint loading started...");
 
     Handle hbldrHandle;
     if (R_FAILED(res = svcConnectToPort(&hbldrHandle, "hb:ldr"))) {
-        Logger::getInstance().log(Logger::ERROR, "无法启动: 0x%08lX. 系统内没找到 Rosalina.", res);
+        Logger::getInstance().log(Logger::ERROR, "Error during startup with result 0x%08lX. Rosalina not found on this system.", res);
         return consoleDisplayError("系统内没有找到 Rosalina.\n请更新 CFW 后再启动 Checkpoint.", res);
     }
 
@@ -86,7 +86,7 @@ Result servicesInit(void)
     // consoleDebugInit(debugDevice_SVC);
     // while (aptMainLoop() && !(hidKeysDown() & KEY_START)) { hidScanInput(); }
 
-    Logger::getInstance().log(Logger::INFO, "Checkpoint 加载完成!");
+    Logger::getInstance().log(Logger::INFO, "Checkpoint loading finished!");
 
     return 0;
 }
