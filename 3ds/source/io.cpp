@@ -51,7 +51,7 @@ void io::copyFile(FS_Archive srcArch, FS_Archive dstArch, const std::u16string& 
     }
     else {
         Logger::getInstance().log(Logger::ERROR,
-            "无法打开源文件 " + StringUtils::UTF16toUTF8(srcPath) + ": 0x%08lX, 正在跳过...", input.result());
+            "Failed to open source file " + StringUtils::UTF16toUTF8(srcPath) + " during copy with result 0x%08lX. Skipping...", input.result());
         return;
     }
 
@@ -78,7 +78,7 @@ void io::copyFile(FS_Archive srcArch, FS_Archive dstArch, const std::u16string& 
     }
     else {
         Logger::getInstance().log(Logger::ERROR,
-            "无法打开目标文件 " + StringUtils::UTF16toUTF8(dstPath) + ": 0x%08lX, 正在跳过...",
+            "Failed to open destination file " + StringUtils::UTF16toUTF8(dstPath) + " during copy with result 0x%08lX. Skipping...",
             output.result());
     }
 
@@ -174,7 +174,7 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
     Title title;
     getTitle(title, index);
 
-    Logger::getInstance().log(Logger::INFO, "开始备份 %s, 应用 ID: 0x%08lX.", title.shortDescription().c_str(), title.lowId());
+    Logger::getInstance().log(Logger::INFO, "Started backup of %s. Title id: 0x%08lX.", title.shortDescription().c_str(), title.lowId());
 
     if (title.cardType() == CARD_CTR) {
         FS_Archive archive;
@@ -210,7 +210,7 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
                 res = FSUSER_DeleteDirectoryRecursively(Archive::sdmc(), fsMakePath(PATH_UTF16, dstPath.data()));
                 if (R_FAILED(res)) {
                     FSUSER_CloseArchive(archive);
-                    Logger::getInstance().log(Logger::ERROR, "无法递归删除现有备份文件夹: 0x%08lX.", res);
+                    Logger::getInstance().log(Logger::ERROR, "Failed to delete the existing backup directory recursively with result 0x%08lX.", res);
                     return std::make_tuple(false, res, "无法递归删除现有备份文件夹.");
                 }
             }
@@ -218,7 +218,7 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
             res = io::createDirectory(Archive::sdmc(), dstPath);
             if (R_FAILED(res)) {
                 FSUSER_CloseArchive(archive);
-                Logger::getInstance().log(Logger::ERROR, "无法创建目标文件夹.");
+                Logger::getInstance().log(Logger::ERROR, "Failed to create destination directory.");
                 return std::make_tuple(false, res, "无法创建目标文件夹.");
             }
 
@@ -229,14 +229,14 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
                 std::string message = mode == MODE_SAVE ? "无法备份数据." : "无法备份额外数据.";
                 FSUSER_CloseArchive(archive);
                 FSUSER_DeleteDirectoryRecursively(Archive::sdmc(), fsMakePath(PATH_UTF16, dstPath.data()));
-                Logger::getInstance().log(Logger::ERROR, message + ": 0x%08lX.", res);
+                Logger::getInstance().log(Logger::ERROR, message + " Result 0x%08lX.", res);
                 return std::make_tuple(false, res, message);
             }
 
             refreshDirectories(title.id());
         }
         else {
-            Logger::getInstance().log(Logger::ERROR, "无法打开数据文件: 0x%08lX.", res);
+            Logger::getInstance().log(Logger::ERROR, "Failed to open save archive with result 0x%08lX.", res);
             return std::make_tuple(false, res, "无法打开数据文件.");
         }
 
@@ -270,14 +270,14 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
         if (!isNewFolder || io::directoryExists(Archive::sdmc(), dstPath)) {
             res = FSUSER_DeleteDirectoryRecursively(Archive::sdmc(), fsMakePath(PATH_UTF16, dstPath.data()));
             if (R_FAILED(res)) {
-                Logger::getInstance().log(Logger::ERROR, "无法递归删除现有备份文件夹: 0x%08lX.", res);
+                Logger::getInstance().log(Logger::ERROR, "Failed to delete the existing backup directory recursively with result 0x%08lX.", res);
                 return std::make_tuple(false, res, "无法递归删除现有备份文件夹.");
             }
         }
 
         res = io::createDirectory(Archive::sdmc(), dstPath);
         if (R_FAILED(res)) {
-            Logger::getInstance().log(Logger::ERROR, "无法创建目标文件夹: 0x%08lX.", res);
+            Logger::getInstance().log(Logger::ERROR, "Failed to create destination directory with result 0x%08lX.", res);
             return std::make_tuple(false, res, "无法创建目标文件夹.");
         }
 
@@ -296,7 +296,7 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
             delete[] saveFile;
             FSUSER_DeleteDirectoryRecursively(Archive::sdmc(), fsMakePath(PATH_UTF16, dstPath.data()));
             Logger::getInstance().log(
-                Logger::ERROR, "写入数据至 SD 卡失败后无法递归删除文件夹: 0x%08lX.", res);
+                Logger::ERROR, "Failed to delete directory recursively after failing to write save to the sd card with result 0x%08lX.", res);
             return std::make_tuple(false, res, "无法备份数据.");
         }
 
@@ -309,7 +309,7 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
             stream.close();
             FSUSER_DeleteDirectoryRecursively(Archive::sdmc(), fsMakePath(PATH_UTF16, dstPath.data()));
             Logger::getInstance().log(
-                Logger::ERROR, "写入数据至 SD 卡失败后无法递归删除文件夹: 0x%08lX.", res);
+                Logger::ERROR, "Failed to delete directory recursively after failing to write save to the sd card with result 0x%08lX.", res);
             return std::make_tuple(false, res, "无法备份数据.");
         }
 
@@ -318,7 +318,7 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
         refreshDirectories(title.id());
     }
 
-    Logger::getInstance().log(Logger::INFO, "已备份.");
+    Logger::getInstance().log(Logger::INFO, "Backup succeeded.");
     return std::make_tuple(true, 0, "已备份.");
 }
 
@@ -330,7 +330,7 @@ std::tuple<bool, Result, std::string> io::restore(size_t index, size_t cellIndex
     Title title;
     getTitle(title, index);
 
-    Logger::getInstance().log(Logger::INFO, "开始备份 %s, 应用 ID: 0x%08lX.", title.shortDescription().c_str(), title.lowId());
+    Logger::getInstance().log(Logger::INFO, "Started restore of %s. Title id: 0x%08lX.", title.shortDescription().c_str(), title.lowId());
 
     if (title.cardType() == CARD_CTR) {
         FS_Archive archive;
@@ -357,7 +357,7 @@ std::tuple<bool, Result, std::string> io::restore(size_t index, size_t cellIndex
             if (R_FAILED(res)) {
                 std::string message = mode == MODE_SAVE ? "无法恢复数据." : "无法恢复额外数据.";
                 FSUSER_CloseArchive(archive);
-                Logger::getInstance().log(Logger::ERROR, message + ": 0x%08lX.", res);
+                Logger::getInstance().log(Logger::ERROR, message + ". Result 0x%08lX.", res);
                 return std::make_tuple(false, res, message);
             }
 
@@ -365,7 +365,7 @@ std::tuple<bool, Result, std::string> io::restore(size_t index, size_t cellIndex
                 res = FSUSER_ControlArchive(archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
                 if (R_FAILED(res)) {
                     FSUSER_CloseArchive(archive);
-                    Logger::getInstance().log(Logger::ERROR, "无法提交数据: 0x%08lX.", res);
+                    Logger::getInstance().log(Logger::ERROR, "Failed to commit save data with result 0x%08lX.", res);
                     return std::make_tuple(false, res, "无法提交数据.");
                 }
 
@@ -374,13 +374,13 @@ std::tuple<bool, Result, std::string> io::restore(size_t index, size_t cellIndex
                 res             = FSUSER_ControlSecureSave(SECURESAVE_ACTION_DELETE, &secureValue, 8, &out, 1);
                 if (R_FAILED(res)) {
                     FSUSER_CloseArchive(archive);
-                    Logger::getInstance().log(Logger::ERROR, "无法修复安全值: 0x%08lX.", res);
+                    Logger::getInstance().log(Logger::ERROR, "Failed to fix secure value with result 0x%08lX.", res);
                     return std::make_tuple(false, res, "无法修复安全值.");
                 }
             }
         }
         else {
-            Logger::getInstance().log(Logger::ERROR, "无法打开数据文件: 0x%08lX.", res);
+            Logger::getInstance().log(Logger::ERROR, "Failed to open save archive with result 0x%08lX.", res);
             return std::make_tuple(false, res, "无法打开数据文件.");
         }
 
@@ -405,7 +405,7 @@ std::tuple<bool, Result, std::string> io::restore(size_t index, size_t cellIndex
 
         if (R_FAILED(res)) {
             delete[] saveFile;
-            Logger::getInstance().log(Logger::ERROR, "无法读取备份: 0x%08lX.", res);
+            Logger::getInstance().log(Logger::ERROR, "Failed to read save file backup with result 0x%08lX.", res);
             return std::make_tuple(false, res, "无法读取备份.");
         }
 
@@ -418,14 +418,14 @@ std::tuple<bool, Result, std::string> io::restore(size_t index, size_t cellIndex
 
         if (R_FAILED(res)) {
             delete[] saveFile;
-            Logger::getInstance().log(Logger::ERROR, "无法恢复数据: 0x%08lX.", res);
+            Logger::getInstance().log(Logger::ERROR, "Failed to restore save with result 0x%08lX.", res);
             return std::make_tuple(false, res, "无法恢复数据.");
         }
 
         delete[] saveFile;
     }
 
-    Logger::getInstance().log(Logger::INFO, "已恢复.");
+    Logger::getInstance().log(Logger::INFO, "Restore succeeded.");
     return std::make_tuple(true, 0, nameFromCell + "已恢复.");
 }
 
@@ -433,6 +433,6 @@ void io::deleteBackupFolder(const std::u16string& path)
 {
     Result res = FSUSER_DeleteDirectoryRecursively(Archive::sdmc(), fsMakePath(PATH_UTF16, path.data()));
     if (R_FAILED(res)) {
-        Logger::getInstance().log(Logger::INFO, "无法删除备份文件夹: 0x%08lX.", res);
+        Logger::getInstance().log(Logger::INFO, "Failed to delete backup folder with result 0x%08lX.", res);
     }
 }
