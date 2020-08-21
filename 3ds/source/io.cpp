@@ -226,7 +226,7 @@ std::tuple<bool, Result, std::string> io::backup(size_t index, size_t cellIndex)
 
             res = io::copyDirectory(archive, Archive::sdmc(), StringUtils::UTF8toUTF16("/"), copyPath);
             if (R_FAILED(res)) {
-                std::string message = mode == MODE_SAVE ? "无法备份数据." : "无法备份额外数据.";
+                std::string message = mode == MODE_SAVE ? "无法备份数据." : "无法备份追加数据.";
                 FSUSER_CloseArchive(archive);
                 FSUSER_DeleteDirectoryRecursively(Archive::sdmc(), fsMakePath(PATH_UTF16, dstPath.data()));
                 Logger::getInstance().log(Logger::ERROR, message + " Result 0x%08lX.", res);
@@ -355,7 +355,7 @@ std::tuple<bool, Result, std::string> io::restore(size_t index, size_t cellIndex
 
             res = io::copyDirectory(Archive::sdmc(), archive, srcPath, dstPath);
             if (R_FAILED(res)) {
-                std::string message = mode == MODE_SAVE ? "无法恢复数据." : "无法恢复额外数据.";
+                std::string message = mode == MODE_SAVE ? "无法恢复数据." : "无法恢复追加数据.";
                 FSUSER_CloseArchive(archive);
                 Logger::getInstance().log(Logger::ERROR, message + ". Result 0x%08lX.", res);
                 return std::make_tuple(false, res, message);
