@@ -49,7 +49,7 @@ MainScreen::MainScreen(void) : hid(rowlen * collen, collen)
     sprintf(ver, "v%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
 
     C2D_TextParse(&ins1, staticBuf, "按住 SELECT 查看命令. 按 \uE002 切换至");
-    C2D_TextParse(&ins2, staticBuf, "额外数据");
+    C2D_TextParse(&ins2, staticBuf, "追加数据");
     C2D_TextParse(&ins3, staticBuf, ".");
     C2D_TextParse(&ins4, staticBuf, "按 \uE073 或 START 退出.");
     C2D_TextParse(&version, staticBuf, ver);
