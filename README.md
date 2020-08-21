@@ -1,3 +1,15 @@
+# 注意
+
+**注意: 请确保系统已安装简体中文字库.**
+
+**注意: 请确保系统已安装简体中文字库.**
+
+**注意: 请确保系统已安装简体中文字库.**
+
+最新版安装包二维码
+
+
+
 # Checkpoint <a href="https://github.com/FlagBrew/Checkpoint/releases/latest"><img src="https://img.shields.io/github/downloads/FlagBrew/Checkpoint/total.svg"></a>
 
 A fast and simple homebrew save manager for 3DS and Switch written in C++.
