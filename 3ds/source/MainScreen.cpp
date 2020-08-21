@@ -38,7 +38,7 @@ MainScreen::MainScreen(void) : hid(rowlen * collen, collen)
 
     buttonBackup    = std::make_unique<Clickable>(204, 102, 110, 35, COLOR_GREY_DARKER, COLOR_WHITE, "备份 \uE004", true);
     buttonRestore   = std::make_unique<Clickable>(204, 139, 110, 35, COLOR_GREY_DARKER, COLOR_WHITE, "恢复 \uE005", true);
-    buttonCheats    = std::make_unique<Clickable>(204, 176, 110, 36, COLOR_GREY_DARKER, COLOR_WHITE, "作弊", true);
+    buttonCheats    = std::make_unique<Clickable>(204, 176, 110, 36, COLOR_GREY_DARKER, COLOR_WHITE, "金手指", true);
     buttonPlayCoins = std::make_unique<Clickable>(204, 176, 110, 36, COLOR_GREY_DARKER, COLOR_WHITE, "\uE075 游戏金币", true);
     directoryList   = std::make_unique<Scrollable>(6, 102, 196, 110, 5);
     buttonBackup->canChangeColorWhenSelected(true);
@@ -55,7 +55,7 @@ MainScreen::MainScreen(void) : hid(rowlen * collen, collen)
     C2D_TextParse(&version, staticBuf, ver);
     C2D_TextParse(&checkpoint, staticBuf, "Checkpoint");
     C2D_TextParse(&c2dId, staticBuf, "ID: ");
-    C2D_TextParse(&c2dMediatype, staticBuf, "位置: ");
+    C2D_TextParse(&c2dMediatype, staticBuf, "位置:");
 
     C2D_TextParse(&top_move, staticBuf, "\uE006 切换应用");
     C2D_TextParse(&top_a, staticBuf, "\uE000 选择");
@@ -483,7 +483,7 @@ void MainScreen::handleEvents(touchPosition* touch)
                         currentOverlay = std::make_shared<CheatManagerOverlay>(*this, key);
                     }
                     else {
-                        currentOverlay = std::make_shared<InfoOverlay>(*this, "该应用没有可用的作弊.");
+                        currentOverlay = std::make_shared<InfoOverlay>(*this, "该应用没有可用的金手指.");
                     }
                 }
             }
