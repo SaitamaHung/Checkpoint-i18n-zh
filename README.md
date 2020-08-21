@@ -7,8 +7,7 @@
 **注意: 请确保系统已安装简体中文字库.**
 
 最新版安装包二维码
-
-
+![qr_code_checkpoint.png](https://i.loli.net/2020/08/21/78mVk1zw35MgIfu.png)
 
 # Checkpoint <a href="https://github.com/FlagBrew/Checkpoint/releases/latest"><img src="https://img.shields.io/github/downloads/FlagBrew/Checkpoint/total.svg"></a>
 
