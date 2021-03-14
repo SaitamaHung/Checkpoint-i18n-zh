@@ -25,6 +25,7 @@
  */
 
 #include "MainScreen.hpp"
+#include "font.hpp"
 
 static constexpr size_t rowlen = 4, collen = 8;
 
@@ -95,6 +96,8 @@ MainScreen::~MainScreen(void)
 
 void MainScreen::drawTop(void) const
 {
+    if (!font_ttf) FontLoad("sdmc:/font/hkj_full.bcfnt");
+    if (!font_ttf) FontLoad("sdmc:/font/hkj_std.bcfnt");
     auto selEnt          = MS::selectedEntries();
     const size_t entries = hid.maxVisibleEntries();
     const size_t max     = hid.maxEntries(getTitleCount()) + 1;
@@ -146,7 +149,7 @@ void MainScreen::drawTop(void) const
     C2D_DrawText(&ins3, C2D_WithColor, border + ceilf((ins1.width + ins2.width) * 0.47f), 223, 0.5f, 0.47f, 0.47f, COLOR_WHITE);
 
     if (hidKeysHeld() & KEY_SELECT) {
-        const u32 inst_lh = scaleInst * fontGetInfo(NULL)->lineFeed;
+        const u32 inst_lh = scaleInst * fontGetInfo(font_ttf)->lineFeed;
         const u32 inst_h  = ceilf((240 - scaleInst * inst_lh * 6) / 2);
         C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_OVERLAY);
         C2D_DrawText(&top_move, C2D_WithColor, ceilf((400 - StringUtils::textWidth(top_move, scaleInst)) / 2), inst_h, 0.9f, scaleInst, scaleInst,
@@ -173,7 +176,7 @@ void MainScreen::drawTop(void) const
         C2D_TextParse(&text, dynamicBuf, StringUtils::UTF16toUTF8(g_currentFile).c_str());
         C2D_TextOptimize(&text);
         C2D_DrawText(&text, C2D_WithColor, ceilf((400 - StringUtils::textWidth(text, size)) / 2),
-            ceilf((240 - size * fontGetInfo(NULL)->lineFeed) / 2), 0.9f, size, size, COLOR_WHITE);
+            ceilf((240 - size * fontGetInfo(font_ttf)->lineFeed) / 2), 0.9f, size, size, COLOR_WHITE);
     }
 }
 
