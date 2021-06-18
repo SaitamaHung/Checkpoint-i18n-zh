@@ -29,6 +29,7 @@
 
 #include "colors.hpp"
 #include "gui.hpp"
+#include "c2d.hpp"
 #include "iclickable.hpp"
 #include "main.hpp"
 #include <citro2d.h>
@@ -39,8 +40,9 @@ public:
     Clickable(int x, int y, u16 w, u16 h, u32 colorBg, u32 colorText, std::string message, bool centered)
         : IClickable(x, y, w, h, colorBg, colorText, message, centered)
     {
+        c2d::fontInit();
         mTextBuf = C2D_TextBufNew(64);
-        C2D_TextParse(&mC2dText, mTextBuf, message.c_str());
+        C2D_TextFontParse(&mC2dText, c2d::getFont(), mTextBuf, message.c_str());
         C2D_TextOptimize(&mC2dText);
     }
 

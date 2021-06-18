@@ -25,14 +25,16 @@
  */
 
 #include "InfoOverlay.hpp"
+#include "c2d.hpp"
 
 InfoOverlay::InfoOverlay(Screen& screen, const std::string& mtext) : Overlay(screen)
 {
+    c2d::fontInit();
     textBuf = C2D_TextBufNew(64);
     button  = std::make_unique<Clickable>(42, 162, 236, 36, COLOR_GREY_DARK, COLOR_WHITE, "好", true);
     button->selected(true);
     std::string t = StringUtils::wrap(mtext, size, 220);
-    C2D_TextParse(&text, textBuf, t.c_str());
+    C2D_TextFontParse(&text, c2d::getFont(), textBuf, t.c_str());
     C2D_TextOptimize(&text);
     posx = ceilf(320 - StringUtils::textWidth(text, size)) / 2;
     posy = 40 + ceilf(120 - StringUtils::textHeight(t, size)) / 2;
@@ -57,7 +59,7 @@ void InfoOverlay::drawBottom(void) const
     Gui::drawPulsingOutline(42, 162, 236, 36, 2, COLOR_BLUE);
 }
 
-void InfoOverlay::update(touchPosition* touch)
+void InfoOverlay::update(touchPosition* _touch)
 {
     if (button->released() || (hidKeysDown() & KEY_A) || (hidKeysDown() & KEY_B)) {
         screen.removeOverlay();

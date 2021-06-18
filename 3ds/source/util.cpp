@@ -143,8 +143,7 @@ static std::queue<u16> widthCacheOrder;
 
 std::string StringUtils::splitWord(const std::string& text, float scaleX, float maxWidth)
 {
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_full.bcfnt");
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_std.bcfnt");
+    fontInit();
     
     std::string word = text;
     if (StringUtils::textWidth(word, scaleX) > maxWidth) {
@@ -172,7 +171,7 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
                 charWidth = width->second->charWidth * scaleX;
             }
             else {
-                widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(font_ttf, fontGlyphIndexFromCodePoint(font_ttf, codepoint)));
+                widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(getFont(), fontGlyphIndexFromCodePoint(getFont(), codepoint)));
                 widthCacheOrder.push(codepoint);
                 if (widthCache.size() > 512) {
                     widthCache.erase(widthCacheOrder.front());
@@ -194,8 +193,7 @@ std::string StringUtils::splitWord(const std::string& text, float scaleX, float 
 
 float StringUtils::textWidth(const std::string& text, float scaleX)
 {
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_full.bcfnt");
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_std.bcfnt");
+    fontInit();
     float ret        = 0.0f;
     float largestRet = 0.0f;
     for (size_t i = 0; i < text.size(); i++) {
@@ -225,7 +223,7 @@ float StringUtils::textWidth(const std::string& text, float scaleX)
             charWidth = width->second->charWidth * scaleX;
         }
         else {
-            widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(font_ttf, fontGlyphIndexFromCodePoint(font_ttf, codepoint)));
+            widthCache.insert_or_assign(codepoint, fontGetCharWidthInfo(getFont(), fontGlyphIndexFromCodePoint(getFont(), codepoint)));
             widthCacheOrder.push(codepoint);
             if (widthCache.size() > 1000) {
                 widthCache.erase(widthCacheOrder.front());
@@ -302,8 +300,7 @@ std::string StringUtils::wrap(const std::string& text, float scaleX, float maxWi
 
 float StringUtils::textHeight(const std::string& text, float scaleY)
 {
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_full.bcfnt");
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_std.bcfnt");
+    fontInit();
     size_t n = std::count(text.begin(), text.end(), '\n') + 1;
-    return ceilf(scaleY * fontGetInfo(font_ttf)->lineFeed * n);
+    return ceilf(scaleY * fontGetInfo(getFont())->lineFeed * n);
 }

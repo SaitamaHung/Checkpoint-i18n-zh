@@ -26,6 +26,7 @@
 
 #include "MainScreen.hpp"
 #include "font.hpp"
+#include "c2d.hpp"
 
 static constexpr size_t rowlen = 4, collen = 8;
 
@@ -47,25 +48,34 @@ MainScreen::MainScreen(void) : hid(rowlen * collen, collen)
     buttonCheats->canChangeColorWhenSelected(true);
     buttonPlayCoins->canChangeColorWhenSelected(true);
 
+    fontInit();
+    /*
+    c2d::fontInit();
+    C2D_Text* c2ds[] = {&ins1, &ins2, &ins3, &ins4, &version, &checkpoint, &c2dId, &c2dMediatype, &top_move, &top_a, &top_y, &top_my, &top_b, &bot_ts, &bot_x, &coins};
+    for (int i = 0; i < 16; ++i) {
+        C2D_Text* &text = c2ds[i];
+
+    }*/
+
     sprintf(ver, "v%d.%d.%d", VERSION_MAJOR, VERSION_MINOR, VERSION_MICRO);
 
-    C2D_TextParse(&ins1, staticBuf, "按住 SELECT 查看命令. 按 \uE002 切换至");
-    C2D_TextParse(&ins2, staticBuf, "追加数据");
-    C2D_TextParse(&ins3, staticBuf, ".");
-    C2D_TextParse(&ins4, staticBuf, "按 \uE073 或 START 退出.");
-    C2D_TextParse(&version, staticBuf, ver);
-    C2D_TextParse(&checkpoint, staticBuf, "Checkpoint");
-    C2D_TextParse(&c2dId, staticBuf, "ID: ");
-    C2D_TextParse(&c2dMediatype, staticBuf, "位置:");
+    C2D_TextFontParse(&ins1, c2d::getFont(), staticBuf, "按住 SELECT 查看命令. 按 \uE002 切换至");
+    C2D_TextFontParse(&ins2, c2d::getFont(), staticBuf, "追加数据");
+    C2D_TextFontParse(&ins3, c2d::getFont(), staticBuf, ".");
+    C2D_TextFontParse(&ins4, c2d::getFont(), staticBuf, "按 \uE073 或 START 退出.");
+    C2D_TextFontParse(&version, c2d::getFont(), staticBuf, ver);
+    C2D_TextFontParse(&checkpoint, c2d::getFont(), staticBuf, "Checkpoint");
+    C2D_TextFontParse(&c2dId, c2d::getFont(), staticBuf, "ID: ");
+    C2D_TextFontParse(&c2dMediatype, c2d::getFont(), staticBuf, "位置:");
 
-    C2D_TextParse(&top_move, staticBuf, "\uE006 切换应用");
-    C2D_TextParse(&top_a, staticBuf, "\uE000 选择");
-    C2D_TextParse(&top_y, staticBuf, "\uE003 多选");
-    C2D_TextParse(&top_my, staticBuf, "\uE003 按住全选");
-    C2D_TextParse(&top_b, staticBuf, "\uE001 退出选择或取消多选");
-    C2D_TextParse(&bot_ts, staticBuf, "\uE01D \uE006 切换备份");
-    C2D_TextParse(&bot_x, staticBuf, "\uE002 删除备份");
-    C2D_TextParse(&coins, staticBuf, "\uE075");
+    C2D_TextFontParse(&top_move, c2d::getFont(), staticBuf, "\uE006 切换应用");
+    C2D_TextFontParse(&top_a, c2d::getFont(), staticBuf, "\uE000 选择");
+    C2D_TextFontParse(&top_y, c2d::getFont(), staticBuf, "\uE003 多选");
+    C2D_TextFontParse(&top_my, c2d::getFont(), staticBuf, "\uE003 按住全选");
+    C2D_TextFontParse(&top_b, c2d::getFont(), staticBuf, "\uE001 退出选择或取消多选");
+    C2D_TextFontParse(&bot_ts, c2d::getFont(), staticBuf, "\uE01D \uE006 切换备份");
+    C2D_TextFontParse(&bot_x, c2d::getFont(), staticBuf, "\uE002 删除备份");
+    C2D_TextFontParse(&coins, c2d::getFont(), staticBuf, "\uE075");
 
     C2D_TextOptimize(&ins1);
     C2D_TextOptimize(&ins2);
@@ -96,8 +106,7 @@ MainScreen::~MainScreen(void)
 
 void MainScreen::drawTop(void) const
 {
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_full.bcfnt");
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_std.bcfnt");
+    fontInit();
     auto selEnt          = MS::selectedEntries();
     const size_t entries = hid.maxVisibleEntries();
     const size_t max     = hid.maxEntries(getTitleCount()) + 1;
@@ -110,7 +119,7 @@ void MainScreen::drawTop(void) const
     C2D_DrawRectSolid(0, 221, 0.5f, 400, 19, COLOR_GREY_DARK);
 
     C2D_Text timeText;
-    C2D_TextParse(&timeText, dynamicBuf, DateTime::timeStr().c_str());
+    C2D_TextFontParse(&timeText, c2d::getFont(), dynamicBuf, DateTime::timeStr().c_str());
     C2D_TextOptimize(&timeText);
     C2D_DrawText(&timeText, C2D_WithColor, 4.0f, 3.0f, 0.5f, 0.45f, 0.45f, COLOR_GREY_LIGHT);
 
@@ -149,7 +158,7 @@ void MainScreen::drawTop(void) const
     C2D_DrawText(&ins3, C2D_WithColor, border + ceilf((ins1.width + ins2.width) * 0.47f), 223, 0.5f, 0.47f, 0.47f, COLOR_WHITE);
 
     if (hidKeysHeld() & KEY_SELECT) {
-        const u32 inst_lh = scaleInst * fontGetInfo(font_ttf)->lineFeed;
+        const u32 inst_lh = scaleInst * fontGetInfo(getFont())->lineFeed;
         const u32 inst_h  = ceilf((240 - scaleInst * inst_lh * 6) / 2);
         C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_OVERLAY);
         C2D_DrawText(&top_move, C2D_WithColor, ceilf((400 - StringUtils::textWidth(top_move, scaleInst)) / 2), inst_h, 0.9f, scaleInst, scaleInst,
@@ -173,10 +182,10 @@ void MainScreen::drawTop(void) const
 
         float size = 0.7f;
         C2D_Text text;
-        C2D_TextParse(&text, dynamicBuf, StringUtils::UTF16toUTF8(g_currentFile).c_str());
+        C2D_TextFontParse(&text, c2d::getFont(), dynamicBuf, StringUtils::UTF16toUTF8(g_currentFile).c_str());
         C2D_TextOptimize(&text);
         C2D_DrawText(&text, C2D_WithColor, ceilf((400 - StringUtils::textWidth(text, size)) / 2),
-            ceilf((240 - size * fontGetInfo(font_ttf)->lineFeed) / 2), 0.9f, size, size, COLOR_WHITE);
+            ceilf((240 - size * fontGetInfo(getFont())->lineFeed) / 2), 0.9f, size, size, COLOR_WHITE);
     }
 }
 
@@ -205,10 +214,10 @@ void MainScreen::drawBottom(void) const
         char lowid[18];
         snprintf(lowid, 9, "%08X", (int)title.lowId());
 
-        C2D_TextParse(&shortDesc, dynamicBuf, title.shortDescription().c_str());
-        C2D_TextParse(&longDesc, dynamicBuf, title.longDescription().c_str());
-        C2D_TextParse(&id, dynamicBuf, lowid);
-        C2D_TextParse(&media, dynamicBuf, title.mediaTypeString().c_str());
+        C2D_TextFontParse(&shortDesc, c2d::getFont(), dynamicBuf, title.shortDescription().c_str());
+        C2D_TextFontParse(&longDesc, c2d::getFont(), dynamicBuf, title.longDescription().c_str());
+        C2D_TextFontParse(&id, c2d::getFont(), dynamicBuf, lowid);
+        C2D_TextFontParse(&media, c2d::getFont(), dynamicBuf, title.mediaTypeString().c_str());
 
         C2D_TextOptimize(&shortDesc);
         C2D_TextOptimize(&longDesc);
@@ -226,7 +235,7 @@ void MainScreen::drawBottom(void) const
         C2D_DrawText(&id, C2D_WithColor, 25, 31 + longDescHeight, 0.5f, 0.5f, 0.5f, COLOR_WHITE);
 
         snprintf(lowid, 18, "(%s)", title.productCode);
-        C2D_TextParse(&prodCode, dynamicBuf, lowid);
+        C2D_TextFontParse(&prodCode, c2d::getFont(), dynamicBuf, lowid);
         C2D_TextOptimize(&prodCode);
         C2D_DrawText(&prodCode, C2D_WithColor, 30 + lowidWidth, 32 + longDescHeight, 0.5f, 0.42f, 0.42f, COLOR_GREY_LIGHT);
         C2D_DrawText(&c2dMediatype, C2D_WithColor, 4, 47 + longDescHeight, 0.5f, 0.5f, 0.5f, COLOR_GREY_LIGHT);

@@ -8379,18 +8379,18 @@ scan_number_done:
         std::string result;
         for (const auto c : token_string)
         {
-            if ('\x00' <= c and c <= '\x1F')
-            {
+            //if ('\x00' <= c and c <= '\x1F')
+            //{
                 // escape control characters
                 std::array<char, 9> cs{{}};
                 (std::snprintf)(cs.data(), cs.size(), "<U+%.4X>", static_cast<unsigned char>(c));
                 result += cs.data();
-            }
-            else
-            {
+            //}
+            //else
+            //{
                 // add character as is
-                result.push_back(c);
-            }
+            //    result.push_back(c);
+            //}
         }
 
         return result;

@@ -26,12 +26,14 @@
 
 #include "clickable.hpp"
 #include "font.hpp"
+#include "c2d.hpp"
 
 void Clickable::c2dText(const std::string& v)
 {
+    c2d::fontInit();
     text(v);
     mTextBuf = C2D_TextBufNew(64);
-    C2D_TextParse(&mC2dText, mTextBuf, v.c_str());
+    C2D_TextFontParse(&mC2dText, c2d::getFont(), mTextBuf, v.c_str());
     C2D_TextOptimize(&mC2dText);
 }
 
@@ -64,12 +66,11 @@ bool Clickable::released(void)
 
 void Clickable::draw(float size, u32 overlay)
 {
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_full.bcfnt");
-    if (!font_ttf) FontLoad("sdmc:/font/hkj_std.bcfnt");
+    fontInit();
     const u8 r                = overlay & 0xFF;
     const u8 g                = (overlay >> 8) & 0xFF;
     const u8 b                = (overlay >> 16) & 0xFF;
-    const float messageHeight = ceilf(size * fontGetInfo(font_ttf)->lineFeed);
+    const float messageHeight = ceilf(size * fontGetInfo(getFont())->lineFeed);
     const float messageWidth  = mCentered ? mC2dText.width * size : mw - 8;
 
     C2D_DrawRectSolid(mx, my, 0.5f, mw, mh, mColorBg);

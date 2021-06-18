@@ -25,20 +25,24 @@
  */
 
 #include "YesNoOverlay.hpp"
+#include "font.hpp"
+#include "c2d.hpp"
 
 YesNoOverlay::YesNoOverlay(
     Screen& screen, const std::string& mtext, const std::function<void()>& callbackYes, const std::function<void()>& callbackNo)
-    : Overlay(screen), hid(2, 2)
-{
+    : Overlay(screen), hid(2, 2) {
     textBuf = C2D_TextBufNew(64);
-    C2D_TextParse(&text, textBuf, mtext.c_str());
+    c2d::fontInit();
+    C2D_TextFontParse(&text, c2d::getFont(), textBuf, mtext.c_str());
     C2D_TextOptimize(&text);
 
     yesFunc = callbackYes;
     noFunc  = callbackNo;
 
+    fontInit();
+
     posx = ceilf(320 - text.width * 0.6) / 2;
-    posy = 40 + ceilf(120 - 0.6f * fontGetInfo(NULL)->lineFeed) / 2;
+    posy = 40 + ceilf(120 - 0.6f * fontGetInfo(getFont())->lineFeed) / 2;
 
     buttonYes = std::make_unique<Clickable>(42, 162, 116, 36, COLOR_GREY_DARK, COLOR_WHITE, "\uE000 是", true);
     buttonNo  = std::make_unique<Clickable>(162, 162, 116, 36, COLOR_GREY_DARK, COLOR_WHITE, "\uE001 否", true);

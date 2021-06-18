@@ -25,12 +25,14 @@
  */
 
 #include "CheatManagerOverlay.hpp"
+#include "c2d.hpp"
 
 CheatManagerOverlay::CheatManagerOverlay(Screen& screen, const std::string& mkey) : Overlay(screen)
 {
     key                       = mkey;
     multiSelected             = false;
     std::string existingCheat = "";
+    c2d::fontInit();
 
     FILE* f = fopen(("/cheats/" + key + ".txt").c_str(), "r");
     if (f != NULL) {
@@ -59,8 +61,8 @@ CheatManagerOverlay::CheatManagerOverlay(Screen& screen, const std::string& mkey
 
     staticBuf  = C2D_TextBufNew(48);
     dynamicBuf = C2D_TextBufNew(16);
-    C2D_TextParse(&multiSelectText, staticBuf, "\uE003 全选");
-    C2D_TextParse(&multiDeselectText, staticBuf, "\uE003 取消全选");
+    C2D_TextFontParse(&multiSelectText, c2d::getFont(), staticBuf, "\uE003 全选");
+    C2D_TextFontParse(&multiDeselectText, c2d::getFont(), staticBuf, "\uE003 取消全选");
     C2D_TextOptimize(&multiSelectText);
     C2D_TextOptimize(&multiDeselectText);
 }
@@ -73,11 +75,12 @@ CheatManagerOverlay::~CheatManagerOverlay(void)
 
 void CheatManagerOverlay::drawTop(void) const
 {
+    c2d::fontInit();
     C2D_TextBufClear(dynamicBuf);
 
     C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_OVERLAY);
     C2D_Text page;
-    C2D_TextParse(&page, dynamicBuf, StringUtils::format("%d/%d", scrollable->index() + 1, scrollable->size()).c_str());
+    C2D_TextFontParse(&page, c2d::getFont(), dynamicBuf, StringUtils::format("%d/%d", scrollable->index() + 1, scrollable->size()).c_str());
     C2D_TextOptimize(&page);
     C2D_DrawRectSolid(0, 0, 0.5f, 400, 240, COLOR_GREY_DARK);
     scrollable->draw(true);

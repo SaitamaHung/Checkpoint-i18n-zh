@@ -25,16 +25,18 @@
  */
 
 #include "ErrorOverlay.hpp"
+#include "c2d.hpp"
 
 ErrorOverlay::ErrorOverlay(Screen& screen, Result res, const std::string& mtext) : Overlay(screen)
 {
     textBuf = C2D_TextBufNew(128);
     button  = std::make_unique<Clickable>(42, 162, 236, 36, COLOR_GREY_DARKER, COLOR_WHITE, "好", true);
     button->selected(true);
+    c2d::fontInit();
     std::string t = StringUtils::wrap(mtext, size, 220);
     std::string e = StringUtils::format("错误: 0x%08lX", res);
-    C2D_TextParse(&text, textBuf, t.c_str());
-    C2D_TextParse(&error, textBuf, e.c_str());
+    C2D_TextFontParse(&text, c2d::getFont(), textBuf, t.c_str());
+    C2D_TextFontParse(&error, c2d::getFont(), textBuf, e.c_str());
     C2D_TextOptimize(&text);
     C2D_TextOptimize(&error);
     posx = ceilf(320 - StringUtils::textWidth(text, size)) / 2;
